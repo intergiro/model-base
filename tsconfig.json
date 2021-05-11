@@ -8,6 +8,5 @@
 	},
 	"files": [
 		"index.ts",
-		"fetch.browser.ts"
 	]
 }
