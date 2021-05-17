@@ -48,6 +48,7 @@ jobs:
             git status
             echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
             npm publish --access public
+
 workflows:
   version: 2.1
   build-flow:
