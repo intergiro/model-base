@@ -1,4 +1,5 @@
 import * as gracely from "gracely"
+import * as selectively from "selectively"
 import { Address } from "../Address"
 import { Addresses } from "../Addresses"
 import { EmailAddresses } from "../EmailAddresses"
@@ -92,6 +93,18 @@ export namespace Customer {
 		}
 		return result
 	}
+	export const template = new selectively.Type.Object({
+		type: new selectively.Type.Union([
+			new selectively.Type.String("organization"),
+			new selectively.Type.String("person"),
+		]),
+		identityNumber: new selectively.Type.String("SE"),
+		id: new selectively.Type.String(),
+		number: new selectively.Type.String(),
+		name: new selectively.Type.String(),
+		email: new selectively.Type.String(),
+		phone: new selectively.Type.String(),
+	})
 	export type Required = RequiredType
 	export namespace Required {
 		export const is = RequiredType.is
