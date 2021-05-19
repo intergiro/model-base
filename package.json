@@ -55,7 +55,8 @@
 	"dependencies": {
 		"authly": "^0.1.7",
 		"gracely": "^0.0.40",
-		"isoly": "^0.0.33"
+		"isoly": "^0.0.33",
+		"selectively": "0.0.60"
 	},
 	"devDependencies": {
 		"@types/dotenv": "^8.2.0",
