@@ -1,9 +1,11 @@
 import { Creatable as CCreatable } from "./Creatable"
+import * as isoly from "isoly"
 
 export interface Browser extends CCreatable {
 	acceptHeader?: string
 	userAgent?: string
-	ip?: string
+	ip?: string 
+	country?: isoly.CountryCode.Alpha2
 }
 
 export namespace Browser {

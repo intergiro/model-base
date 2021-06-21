@@ -7,6 +7,7 @@ import { IdentityNumber } from "../IdentityNumber"
 import { Name } from "../Name"
 import { PhoneNumbers } from "../PhoneNumbers"
 import { Required as RequiredType } from "./Required"
+import * as isoly from "isoly"
 
 export interface Customer {
 	type?: "organization" | "person"
