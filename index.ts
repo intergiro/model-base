@@ -1,7 +1,7 @@
 export { Address } from "./Address"
 export { Addresses } from "./Addresses"
 export { Browser } from "./Browser"
-export { Customer } from "./Customer"
+export { Contact } from "./Contact"
 export { EmailAddresses } from "./EmailAddresses"
 export { IdentityNumber } from "./IdentityNumber"
 export { Item } from "./Item"
