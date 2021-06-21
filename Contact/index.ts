@@ -8,7 +8,7 @@ import { Name } from "../Name"
 import { PhoneNumbers } from "../PhoneNumbers"
 import { Required as RequiredType } from "./Required"
 
-export interface Customer {
+export interface Contact {
 	type?: "organization" | "person"
 	identityNumber?: IdentityNumber
 	id?: string
@@ -18,8 +18,8 @@ export interface Customer {
 	email?: string | EmailAddresses
 	phone?: string | PhoneNumbers
 }
-export namespace Customer {
-	export function is(value: any | Customer): value is Customer {
+export namespace Contact {
+	export function is(value: any | Contact): value is Contact {
 		return (
 			typeof value == "object" &&
 			(value.type == "organization" || value.type == "person" || value.type == undefined) &&
@@ -32,9 +32,9 @@ export namespace Customer {
 			(typeof value.phone == "string" || PhoneNumbers.is(value.phone) || value.phone == undefined)
 		)
 	}
-	export function flaw(value: any | Customer): gracely.Flaw {
+	export function flaw(value: any | Contact): gracely.Flaw {
 		return {
-			type: "model.Customer",
+			type: "model.Contact",
 			flaws:
 				typeof value != "object"
 					? undefined
@@ -65,23 +65,23 @@ export namespace Customer {
 					  ].filter(gracely.Flaw.is) as gracely.Flaw[]),
 		}
 	}
-	export function getLabel(customer: Customer | undefined): string | undefined {
+	export function getLabel(contact: Contact | undefined): string | undefined {
 		return (
-			(customer?.name && Name.get(customer.name)) ??
-			EmailAddresses.get(customer?.email) ??
-			PhoneNumbers.get(customer?.phone) ??
-			customer?.identityNumber ??
-			customer?.number ??
-			customer?.id ??
-			Addresses.get(customer?.address)?.countryCode ??
-			customer?.type
+			(contact?.name && Name.get(contact.name)) ??
+			EmailAddresses.get(contact?.email) ??
+			PhoneNumbers.get(contact?.phone) ??
+			contact?.identityNumber ??
+			contact?.number ??
+			contact?.id ??
+			Addresses.get(contact?.address)?.countryCode ??
+			contact?.type
 		)
 	}
 
 	export function getCsvHeaders(): string {
-		return `customer type,customer identity number,customer id,customer number`
+		return `contact type,contact identity number,contact id,contact number`
 	}
-	export function toCsv(value: Customer | undefined): string {
+	export function toCsv(value: Contact | undefined): string {
 		let result = ``
 		if (!value)
 			result += `,,,`
