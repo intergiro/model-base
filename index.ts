@@ -1,6 +1,7 @@
 export { Address } from "./Address"
 export { Addresses } from "./Addresses"
 export { Browser } from "./Browser"
+export { Connection } from "./Connection"
 export { Contact } from "./Contact"
 export { EmailAddresses } from "./EmailAddresses"
 export { IdentityNumber } from "./IdentityNumber"
