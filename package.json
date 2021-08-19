@@ -53,9 +53,11 @@
 		"clean": "rm -rf dist node_modules coverage"
 	},
 	"dependencies": {
+		"@types/isomorphic-fetch": "^0.0.35",
 		"authly": "^0.1.7",
 		"gracely": "^0.0.40",
 		"isoly": "^0.0.33",
+		"isomorphic-fetch": "^3.0.0",
 		"selectively": "0.0.60"
 	},
 	"devDependencies": {
