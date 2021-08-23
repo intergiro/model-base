@@ -3,7 +3,7 @@
 		"target": "es2019",
 		"module": "es2015",
 		"allowJs": true,
-		"allowSyntheticDefaultImports": true,
+		"allowSyntheticDefaultImports":true,
 		"esModuleInterop": true,
 		"noImplicitAny": true,
 		"removeComments": true,
@@ -15,35 +15,20 @@
 		"outDir": "dist",
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
-		"lib": [
-			"es2019",
-			"webworker"
-		],
-		"types": [
-			"@cloudflare/workers-types",
-			"node",
-			"jest"
-		],
-		"paths": {
-			"*": [
-				"types/*"
-			]
+		"lib": ["es2019", "webworker"],
+		"types": ["@cloudflare/workers-types","node","jest"],
+		"paths": { 
+			"*": ["types/*"] 
 		}
+
 	},
-	"include": [
-		"*.ts",
-		"**/*.ts",
-		"./node_modules/@cloudflare/workers-types/index.d.ts"
-	],
-	"exclude": [
-		"*.spec.ts",
-		"**/*.spec.ts",
-		"node_modules/",
-		"dist/"
-	],
-	"files": [
-		"index.ts"
-	],
+	  "include": [
+    "*.ts",
+    "**/*.ts",
+    "./node_modules/@cloudflare/workers-types/index.d.ts"
+  ],
+  "exclude": ["*.spec.ts", "**/*.spec.ts", "node_modules/", "dist/"],
+	"files": ["index.ts"],
 	"typeAcquisition": {
 		"enable": true
 	}
