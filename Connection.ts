@@ -16,7 +16,7 @@ export class Connection {
 			method,
 			headers: {
 				Accept:
-					{ jwt: "application/jwt", json: "application/jwt", pdf: "application/pdf", html: "text/html" }[accept] +
+					{ jwt: "application/jwt", json: "application/json", pdf: "application/pdf", html: "text/html" }[accept] +
 					"+camelCase",
 				"Content-Type": "application/json; charset=utf-8",
 				Authorization: `Bearer ${this.token}`,
