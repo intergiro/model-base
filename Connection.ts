@@ -1,50 +1,60 @@
 import * as gracely from "gracely"
-import { default as fetch } from "isomorphic-fetch"
-
-type Accept = "jwt" | "json" | "pdf" | "html"
+import * as http from "cloud-http"
 
 export class Connection {
-	private constructor(readonly url: string, readonly token: string) {}
+	onError?: (error: gracely.Error, request: http.Request) => Promise<boolean>
+	onUnauthorized?: (connection: Connection) => Promise<boolean>
+	private constructor(public url: string | undefined, public key: string | undefined) {}
 
-	async fetch<Response>(
+	private async fetch<Response>(
 		path: string,
-		method: string,
-		request?: any,
-		accept: Accept = "json"
+		method: http.Method,
+		body?: any,
+		header?: http.Request.Header
 	): Promise<Response | gracely.Error> {
-		const response = await fetch(`${this.url}/${path}`, {
-			method,
-			headers: {
-				Accept:
-					{ jwt: "application/jwt", json: "application/json", pdf: "application/pdf", html: "text/html" }[accept] +
-					"+camelCase",
-				"Content-Type": "application/json; charset=utf-8",
-				Authorization: `Bearer ${this.token}`,
-			},
-			body: JSON.stringify(request),
-		}).catch(_ => undefined)
-		return !response
-			? gracely.server.unavailable()
-			: response.headers.get("Content-Type")?.startsWith("application/json")
-			? response.json()
-			: response.text()
+		header = {
+			contentType: body ? "application/json; charset=utf-8" : undefined,
+			authorization: this.key ? "Bearer " + this.key : undefined,
+			...header,
+			accept: (header?.accept ?? ["application/json"]).map(a =>
+				a.startsWith("application/json") ? "application/json+camelCase" + a.substring(26) : ""
+			),
+		}
+
+		let result: Response | gracely.Error
+		if (!this.url)
+			result = gracely.client.notFound("No server configured.")
+		else {
+			const request = { url: `${this.url}/${path}`, method, header, body }
+			const response = await http.fetch(request).catch(error => console.log(error))
+			result = !response
+				? gracely.server.unavailable("Failed to reach server.")
+				: response.status == 401 && this.onUnauthorized && (await this.onUnauthorized(this))
+				? await this.fetch<Response>(path, method, body)
+				: ((await response.body) as Response | gracely.Error)
+			if (gracely.Error.is(result) && this.onError && (await this.onError(result, http.Request.create(request))))
+				result = await this.fetch(path, method, body, header)
+		}
+		return result
 	}
-	async get<Response>(path: string, accept?: Accept): Promise<Response | gracely.Error> {
-		return await this.fetch<Response>(path, "GET", undefined, accept)
+	async get<Response>(path: string, header?: http.Request.Header): Promise<Response | gracely.Error> {
+		return await this.fetch<Response>(path, "GET", undefined, header)
 	}
-	async patch<Response>(path: string, request: any, accept?: Accept): Promise<Response | gracely.Error> {
-		return await this.fetch<Response>(path, "PATCH", request, accept)
+	async post<Response>(path: string, request: any, header?: http.Request.Header): Promise<Response | gracely.Error> {
+		return await this.fetch<Response>(path, "POST", request, header)
 	}
-	async post<Response>(path: string, request: any, accept?: Accept): Promise<Response | gracely.Error> {
-		return await this.fetch<Response>(path, "POST", request, accept)
+	async put<Response>(path: string, request: any, header?: http.Request.Header): Promise<Response | gracely.Error> {
+		return await this.fetch<Response>(path, "PUT", request, header)
 	}
-	async put<Response>(path: string, request: any, accept?: Accept): Promise<Response | gracely.Error> {
-		return await this.fetch<Response>(path, "PUT", request, accept)
+	async patch<Response>(path: string, request: any, header?: http.Request.Header): Promise<Response | gracely.Error> {
+		return await this.fetch<Response>(path, "PATCH", request, header)
 	}
-	async remove<Response>(path: string, accept?: Accept): Promise<Response | gracely.Error> {
-		return await this.fetch<Response>(path, "DELETE", undefined, accept)
+	async delete<Response>(path: string, header?: http.Request.Header): Promise<Response | gracely.Error> {
+		return await this.fetch<Response>(path, "DELETE", undefined, header)
 	}
-	static open(url: string | undefined, token: string | undefined): Connection | undefined {
-		return token && url ? new Connection(url, token) : undefined
+	static open(url: string, key?: string): Connection
+	static open(url: string | undefined, key?: string): Connection | undefined
+	static open(url: string | undefined, key?: string): Connection | undefined {
+		return new Connection(url, key)
 	}
 }
