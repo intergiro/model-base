@@ -52,9 +52,9 @@ export class Connection {
 	async delete<Response>(path: string, header?: http.Request.Header): Promise<Response | gracely.Error> {
 		return await this.fetch<Response>(path, "DELETE", undefined, header)
 	}
-	static open(url: string, key?: string): Connection
-	static open(url: string | undefined, key?: string): Connection | undefined
-	static open(url: string | undefined, key?: string): Connection | undefined {
+	static open(url: string, key: string): Connection
+	static open(url?: string, key?: string): Connection | undefined
+	static open(url?: string, key?: string): Connection | undefined {
 		return new Connection(url, key)
 	}
 }
