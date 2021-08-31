@@ -21,11 +21,11 @@
 			"^.+\\.(j|t)sx?$": "ts-jest"
 		},
 		"transformIgnorePatterns": [
-			"<rootDir>/node_modules/(?!(cryptly|authly|@payfunc|gracely|isoly|servly)/.*)"
+			"<rootDir>/node_modules/(?!(cryptly|authly|@payfunc|gracely|isoly|servly|cloud-http)/.*)"
 		],
 		"globals": {
 			"ts-jest": {
-				"tsConfig": "tsconfig.test.json"
+				"tsconfig": "tsconfig.test.json"
 			}
 		},
 		"testEnvironment": "node",
@@ -55,7 +55,7 @@
 	"dependencies": {
 		"@types/isomorphic-fetch": "^0.0.35",
 		"authly": "^0.1.7",
-		"gracely": "^0.0.40",
+		"gracely": "^0.0.43",
 		"isoly": "^0.0.33",
 		"isomorphic-fetch": "^3.0.0",
 		"selectively": "0.0.60"
@@ -67,6 +67,7 @@
 		"@typescript-eslint/parser": "^3.7.1",
 		"babel-core": "^6.26.3",
 		"babel-jest": "^26.0.1",
+		"cloud-http": "^0.0.26",
 		"dotenv": "^8.2.0",
 		"eslint": "^7.6.0",
 		"eslint-config-standardize": "^0.7.1",
