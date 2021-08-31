@@ -21,11 +21,11 @@
 			"^.+\\.(j|t)sx?$": "ts-jest"
 		},
 		"transformIgnorePatterns": [
-			"<rootDir>/node_modules/(?!(cryptly|authly|@payfunc|gracely|isoly|servly)/.*)"
+			"<rootDir>/node_modules/(?!(cryptly|authly|@payfunc|gracely|isoly|servly|cloud-http)/.*)"
 		],
 		"globals": {
 			"ts-jest": {
-				"tsConfig": "tsconfig.test.json"
+				"tsconfig": "tsconfig.test.json"
 			}
 		},
 		"testEnvironment": "node",
