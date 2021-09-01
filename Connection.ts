@@ -1,56 +1,69 @@
 import * as gracely from "gracely"
-import * as http from "cloud-http"
 import { default as fetch } from "isomorphic-fetch"
 
 export class Connection {
-	onError?: (error: gracely.Error, request: http.Request) => Promise<boolean>
+	onError?: (error: gracely.Error, request: RequestInit) => Promise<boolean>
 	onUnauthorized?: (connection: Connection) => Promise<boolean>
 	private constructor(public url: string | undefined, public key: string | undefined) {}
 
 	private async fetch<Response>(
 		path: string,
-		method: http.Method,
+		method: string,
 		body?: any,
-		header?: http.Request.Header
+		header?: HeadersInit & { accept: string }
 	): Promise<Response | gracely.Error> {
-		header = {
-			contentType: body ? "application/json; charset=utf-8" : undefined,
-			authorization: this.key ? "Bearer " + this.key : undefined,
-			...header,
-			accept: (header?.accept ?? ["application/json"]).map(a =>
-				a.startsWith("application/json") ? "application/json+camelCase" + a.substring(26) : ""
-			),
-		}
-
 		let result: Response | gracely.Error
 		if (!this.url)
 			result = gracely.client.notFound("No server configured.")
 		else {
-			const request = { url: `${this.url}/${path}`, method, header, body }
-			const response = await http.fetch(request).catch(error => console.log(error))
+			const request: RequestInit = {
+				method,
+				headers: {
+					"Content-Type": body ? "application/json; charset=utf-8" : "",
+					Authorization: this.key ? "Bearer " + this.key : "",
+					...header,
+					Accept: (header?.accept ?? "application/json").startsWith("application/json")
+						? "application/json+camelCase" + (header?.accept ?? "application/json").substring(26)
+						: "",
+				},
+				body,
+			}
+			const response = await fetch(`${this.url}/${path}`, request).catch(_ => undefined)
 			result = !response
 				? gracely.server.unavailable("Failed to reach server.")
 				: response.status == 401 && this.onUnauthorized && (await this.onUnauthorized(this))
 				? await this.fetch<Response>(path, method, body)
-				: ((await response.body) as Response | gracely.Error)
-			if (gracely.Error.is(result) && this.onError && (await this.onError(result, http.Request.create(request))))
+				: (((await response.body) ?? gracely.server.backendFailure()) as Response | gracely.Error)
+			if (gracely.Error.is(result) && this.onError && (await this.onError(result, request)))
 				result = await this.fetch(path, method, body, header)
 		}
 		return result
 	}
-	async get<Response>(path: string, header?: http.Request.Header): Promise<Response | gracely.Error> {
+	async get<Response>(path: string, header?: HeadersInit & { accept: string }): Promise<Response | gracely.Error> {
 		return await this.fetch<Response>(path, "GET", undefined, header)
 	}
-	async post<Response>(path: string, request: any, header?: http.Request.Header): Promise<Response | gracely.Error> {
+	async post<Response>(
+		path: string,
+		request: any,
+		header?: HeadersInit & { accept: string }
+	): Promise<Response | gracely.Error> {
 		return await this.fetch<Response>(path, "POST", request, header)
 	}
-	async put<Response>(path: string, request: any, header?: http.Request.Header): Promise<Response | gracely.Error> {
+	async put<Response>(
+		path: string,
+		request: any,
+		header?: HeadersInit & { accept: string }
+	): Promise<Response | gracely.Error> {
 		return await this.fetch<Response>(path, "PUT", request, header)
 	}
-	async patch<Response>(path: string, request: any, header?: http.Request.Header): Promise<Response | gracely.Error> {
+	async patch<Response>(
+		path: string,
+		request: any,
+		header?: HeadersInit & { accept: string }
+	): Promise<Response | gracely.Error> {
 		return await this.fetch<Response>(path, "PATCH", request, header)
 	}
-	async delete<Response>(path: string, header?: http.Request.Header): Promise<Response | gracely.Error> {
+	async delete<Response>(path: string, header?: HeadersInit & { accept: string }): Promise<Response | gracely.Error> {
 		return await this.fetch<Response>(path, "DELETE", undefined, header)
 	}
 	static open(url: string, key: string): Connection
