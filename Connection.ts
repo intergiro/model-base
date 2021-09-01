@@ -1,6 +1,5 @@
 import * as gracely from "gracely"
 import * as http from "cloud-http"
-
 export class Connection {
 	onError?: (error: gracely.Error, request: http.Request) => Promise<boolean>
 	onUnauthorized?: (connection: Connection) => Promise<boolean>

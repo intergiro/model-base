@@ -54,13 +54,14 @@
 	},
 	"dependencies": {
 		"authly": "^0.2.4",
-		"cloud-http": "^0.0.26",
+		"cloud-http": "^0.0.29",
 		"gracely": "^0.1.3",
 		"isoly": "^0.1.9",
 		"selectively": "0.0.60"
 	},
 	"devDependencies": {
 		"@types/dotenv": "^8.2.0",
+		"@types/isomorphic-fetch": "^0.0.35",
 		"@types/jest": "^26.0.0",
 		"@typescript-eslint/eslint-plugin": "^3.7.1",
 		"@typescript-eslint/parser": "^3.7.1",
@@ -71,6 +72,7 @@
 		"eslint-config-standardize": "^0.7.1",
 		"eslint-plugin-prettierx": "github:nilssonemma/eslint-plugin-prettierx#master",
 		"eslint-plugin-simple-import-sort": "^7.0.0",
+		"isomorphic-fetch": "^3.0.0",
 		"jest": "^26",
 		"prettierx": "github:simonmika/prettierx#newline-before-clause",
 		"ts-jest": "^26.1.0",
