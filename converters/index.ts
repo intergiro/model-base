@@ -1,2 +1,3 @@
 export { toCamel } from "./toCamel"
-export { toSnake, defaultExceptions } from "./toSnake"
+export { toSnake } from "./toSnake"
+export { defaultExceptions } from "./defaultExceptions"
