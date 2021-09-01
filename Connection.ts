@@ -43,6 +43,7 @@ export class Connection {
 	async remove<Response>(path: string, accept?: Accept): Promise<Response | gracely.Error> {
 		return await this.fetch<Response>(path, "DELETE", undefined, accept)
 	}
+	static open(url: string, token: string): Connection
 	static open(url: string | undefined, token: string | undefined): Connection | undefined {
 		return token && url ? new Connection(url, token) : undefined
 	}
