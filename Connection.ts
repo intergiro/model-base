@@ -1,5 +1,6 @@
 import * as gracely from "gracely"
 import * as http from "cloud-http"
+import { default as fetch } from "isomorphic-fetch"
 
 export class Connection {
 	onError?: (error: gracely.Error, request: http.Request) => Promise<boolean>
