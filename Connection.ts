@@ -16,7 +16,7 @@ export class Connection {
 			authorization: this.key ? "Bearer " + this.key : undefined,
 			...header,
 			accept: (header?.accept ?? ["application/json"]).map(a =>
-				a.startsWith("application/json") ? "application/json+camelCase" + a.substring(26) : ""
+				a.startsWith("application/json") ? "application/json+camelCase" + a.substring(26) : a
 			),
 		}
 
