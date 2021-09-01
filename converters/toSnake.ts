@@ -1,3 +1,5 @@
+import { defaultExceptions } from "./defaultExceptions"
+
 export function toSnake(camel: Array<unknown>, exceptions?: string[], recursionHistory?: string): Array<unknown>
 export function toSnake(
 	camel: Record<string, unknown>,
@@ -27,5 +29,3 @@ export function toSnake(
 		  }, {})
 		: camel
 }
-
-export const defaultExceptions: string[] = ["*.content.details.data", "*.[*].meta", "meta"]
