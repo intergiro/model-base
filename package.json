@@ -76,7 +76,7 @@
 		"jest": "^26",
 		"prettierx": "github:simonmika/prettierx#newline-before-clause",
 		"ts-jest": "^26.1.0",
-		"typescript": "^4.3.4",
+		"typescript": "4.3.4",
 		"watch": "^1.0.2"
 	}
 }
