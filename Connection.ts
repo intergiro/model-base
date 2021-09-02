@@ -23,7 +23,7 @@ export class Connection {
 					...header,
 					accept: (header?.accept ?? "application/json").startsWith("application/json")
 						? "application/json+camelCase" + (header?.accept ?? "application/json").substring(26)
-						: "",
+						: header?.accept ?? "",
 				},
 				body: JSON.stringify(body),
 			}
