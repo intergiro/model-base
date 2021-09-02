@@ -10,7 +10,7 @@ export class Connection {
 		path: string,
 		method: string,
 		body?: any,
-		header?: HeadersInit & { accept: string }
+		header?: HeadersInit & { accept?: string | undefined }
 	): Promise<Response | gracely.Error> {
 		let result: Response | gracely.Error
 		if (!this.url)
@@ -20,11 +20,11 @@ export class Connection {
 				method,
 				headers: {
 					"Content-Type": body ? "application/json; charset=utf-8" : "",
-					Authorization: this.key ? "Bearer " + this.key : "",
+					authorization: this.key ? "Bearer " + this.key : "",
 					...header,
-					Accept: (header?.accept ?? "application/json").startsWith("application/json")
+					accept: (header?.accept ?? "application/json").startsWith("application/json")
 						? "application/json+camelCase" + (header?.accept ?? "application/json").substring(26)
-						: "",
+						: header?.accept ?? "",
 				},
 				body,
 			}
@@ -33,7 +33,9 @@ export class Connection {
 				? gracely.server.unavailable("Failed to reach server.")
 				: response.status == 401 && this.onUnauthorized && (await this.onUnauthorized(this))
 				? await this.fetch<Response>(path, method, body)
-				: (((await response.body) ?? gracely.server.backendFailure()) as Response | gracely.Error)
+				: response.headers.get("Content-Type")?.startsWith("application/json")
+				? await response.json()
+				: await response.text()
 			if (gracely.Error.is(result) && this.onError && (await this.onError(result, request)))
 				result = await this.fetch(path, method, body, header)
 		}
