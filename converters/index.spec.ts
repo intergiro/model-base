@@ -1,18 +1,104 @@
+import { defaultExceptions } from "./defaultExceptions"
 import { toCamel } from "./toCamel"
-import { defaultExceptions, toSnake } from "./toSnake"
+import { toSnake } from "./toSnake"
 
 describe("IntergiroConverter", () => {
+	it("CT Basic order create test", () => {
+		const order = {
+			id: "1234",
+			number: "1234",
+			items: 5,
+			currency: "SEK",
+			customer: { number: "CT Basic Library Code", phone: "", email: "" },
+			meta: {
+				ct: {
+					algorithm: "sha256",
+					merchantid: "12345",
+					return_url: "https://merchant.com/return.php",
+					callback_url: "https://merchant.com/callback.php",
+				},
+			},
+			callback: "http://api.url/ctpsp/basic/callback",
+			category: "purchase",
+			to_camel_case_example: "order except for meta",
+			payment: {
+				type: "card",
+				card: "eyJ.eyJ.signature",
+				client: {
+					browser: {
+						colorDepth: 24,
+						resolution: [2560, 1440],
+						java: false,
+						javascript: true,
+						locale: "sv-SE",
+						timezone: -120,
+						parent: "https://merchant.com/ui/webshop",
+					},
+				},
+			},
+		}
+		const convertedOrder = toCamel(order)
+		expect(convertedOrder.meta).toEqual({
+			ct: {
+				algorithm: "sha256",
+				callback_url: "https://merchant.com/callback.php",
+				merchantid: "12345",
+				return_url: "https://merchant.com/return.php",
+			},
+		})
+		expect(convertedOrder.to_camel_case_example).toBeUndefined()
+		expect(convertedOrder.toCamelCaseExample).toEqual("order except for meta")
+		const inOrderList: any[] = toCamel([order])
+		expect(inOrderList[0].meta).toEqual({
+			ct: {
+				algorithm: "sha256",
+				callback_url: "https://merchant.com/callback.php",
+				merchantid: "12345",
+				return_url: "https://merchant.com/return.php",
+			},
+		})
+		expect(inOrderList[0].to_camel_case_example).toBeUndefined()
+		expect(inOrderList[0].toCamelCaseExample).toEqual("order except for meta")
+	})
 	it("IntergiroConverter camel to snake", () => {
 		expect(toSnake([...camelCase])).toEqual(snake_case)
 		expect(toCamel([...snake_case])).toEqual(camelCase)
 	})
 	it("IntergiroConverter camel to snake with exceptions", () => {
 		expect(toSnake({ ...camelCaseWithExceptions })).toEqual(snake_case_with_exceptions)
-		expect(toCamel({ ...snake_case_with_exceptions })).toEqual(camelCaseWithExceptions)
+		expect(toCamel({ ...snake_case_with_exceptions })).toEqual({
+			...camelCaseWithExceptions,
+			list: [
+				{
+					...camelCaseWithExceptions.list[0],
+					nested: {
+						meta: {
+							meta_data: false,
+						},
+					},
+				},
+				camelCaseWithExceptions.list[1],
+			],
+		})
 	})
 	it("IntergiroConverter camel to snake with exceptions in a list", () => {
 		expect(toSnake([{ ...camelCaseWithExceptions }])).toEqual([snake_case_with_exceptions])
-		expect(toCamel([{ ...snake_case_with_exceptions }])).toEqual([camelCaseWithExceptions])
+		expect(toCamel([{ ...snake_case_with_exceptions }])).toEqual([
+			{
+				...camelCaseWithExceptions,
+				list: [
+					{
+						...camelCaseWithExceptions.list[0],
+						nested: {
+							meta: {
+								meta_data: false,
+							},
+						},
+					},
+					camelCaseWithExceptions.list[1],
+				],
+			},
+		])
 	})
 	it("IntergiroConverter camel to snake with defaultExceptions + header/headers in a list", () => {
 		const unmodifiedHeaders = toSnake([...camelCase], [...defaultExceptions, "*.header", "*.headers"])
