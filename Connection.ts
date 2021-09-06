@@ -5,8 +5,8 @@ export class Connection {
 	onError?: (error: gracely.Error, request: RequestInit) => Promise<boolean>
 	onUnauthorized?: (connection: Connection) => Promise<boolean>
 	private constructor(url: string | undefined, key: string | undefined) {
-		this.url = url
-		this.key = key
+		Connection.url = url
+		Connection.key = key
 	}
 
 	private async fetch<Response>(
@@ -16,10 +16,10 @@ export class Connection {
 		header?: HeadersInit & { accept?: string | undefined }
 	): Promise<Response | gracely.Error> {
 		let result: Response | gracely.Error
-		if (!this.url)
+		if (!Connection.url)
 			result = gracely.client.notFound("No server configured.")
 		else {
-			const key = this.key
+			const key = Connection.key
 			const request: RequestInit = {
 				method,
 				headers: {
@@ -32,7 +32,7 @@ export class Connection {
 				},
 				body: JSON.stringify(body),
 			}
-			const response = (await fetch(this.url + path, request).catch(error => console.log(error))) ?? undefined
+			const response = (await fetch(Connection.url + path, request).catch(error => console.log(error))) ?? undefined
 			result = !response
 				? gracely.server.unavailable("Failed to reach server.")
 				: response.status == 401 && this.onUnauthorized && (await this.onUnauthorized(this))
@@ -97,12 +97,12 @@ export class Connection {
 		return this.storageValue
 	}
 	private static urlValue: string | undefined
-	get url(): string | undefined {
+	static get url(): string | undefined {
 		const storage = Connection.storage
 		storage && (Connection.urlValue = JSON.parse(storage.getItem("Intergiro baseUrl") ?? "undefined"))
 		return Connection.urlValue ?? "/"
 	}
-	set url(value: string | undefined) {
+	static set url(value: string | undefined) {
 		value = value?.endsWith("/") ? value : value + "/"
 		const storage = Connection.storage
 		if (storage)
@@ -111,19 +111,19 @@ export class Connection {
 	}
 
 	private static keyValue: string | undefined
-	get key(): string | undefined {
+	static get key(): string | undefined {
 		const storage = Connection.storage
 		storage && (Connection.keyValue = storage.getItem("Intergiro key") ?? "undefined")
 		return Connection.keyValue
 	}
-	set key(value: string | undefined) {
+	static set key(value: string | undefined) {
 		const storage = Connection.storage
 		if (storage)
 			value ? storage.setItem("Intergiro key", value) : storage.removeItem("Intergiro key")
 		Connection.keyValue = value
-		this.keyChanged.forEach(callback => callback(Connection.keyValue))
+		Connection.keyChanged.forEach(callback => callback(Connection.keyValue))
 	}
-	readonly keyChanged: ((key: authly.Token | undefined) => void)[] = []
+	static readonly keyChanged: ((key: authly.Token | undefined) => void)[] = []
 
 	static open(url: string, key: string): Connection
 	static open(url?: string, key?: string): Connection | undefined
