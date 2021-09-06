@@ -99,7 +99,7 @@ export class Connection {
 	private static urlValue: string | undefined
 	static get url(): string | undefined {
 		const storage = Connection.storage
-		storage && (Connection.urlValue = JSON.parse(storage.getItem("Intergiro baseUrl") ?? "undefined"))
+		storage && (Connection.urlValue = storage.getItem("Intergiro baseUrl") ?? undefined)
 		return Connection.urlValue ?? "/"
 	}
 	static set url(value: string | undefined) {
