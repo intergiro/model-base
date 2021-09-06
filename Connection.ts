@@ -79,7 +79,7 @@ export class Connection {
 		return await this.fetch<Response>(path, "DELETE", undefined, header)
 	}
 	private static storageValue: Storage | undefined | null = null
-	private static get storage(): Storage | undefined {
+	static get storage(): Storage | undefined {
 		if (this.storageValue == null) {
 			const date = new Date().toUTCString()
 			let result: Storage | undefined
