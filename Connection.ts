@@ -1,9 +1,13 @@
 import * as gracely from "gracely"
+import * as authly from "authly"
 
 export class Connection {
 	onError?: (error: gracely.Error, request: RequestInit) => Promise<boolean>
 	onUnauthorized?: (connection: Connection) => Promise<boolean>
-	private constructor(public url: string | undefined, public key: string | undefined) {}
+	private constructor(url: string | undefined, key: string | undefined) {
+		Connection.url = url
+		Connection.key = key
+	}
 
 	private async fetch<Response>(
 		path: string,
@@ -12,14 +16,15 @@ export class Connection {
 		header?: HeadersInit & { accept?: string | undefined }
 	): Promise<Response | gracely.Error> {
 		let result: Response | gracely.Error
-		if (!this.url)
+		if (!Connection.url)
 			result = gracely.client.notFound("No server configured.")
 		else {
+			const key = Connection.key
 			const request: RequestInit = {
 				method,
 				headers: {
 					"Content-Type": body ? "application/json; charset=utf-8" : "*/*",
-					authorization: this.key ? "Bearer " + this.key : "",
+					authorization: key ? "Bearer " + key : "",
 					...header,
 					accept: (header?.accept ?? "application/json").startsWith("application/json")
 						? "application/json+camelCase" + (header?.accept ?? "application/json").substring(26)
@@ -27,7 +32,7 @@ export class Connection {
 				},
 				body: JSON.stringify(body),
 			}
-			const response = (await fetch(`${this.url}/${path}`, request).catch(error => console.log(error))) ?? undefined
+			const response = (await fetch(Connection.url + path, request).catch(error => console.log(error))) ?? undefined
 			result = !response
 				? gracely.server.unavailable("Failed to reach server.")
 				: response.status == 401 && this.onUnauthorized && (await this.onUnauthorized(this))
@@ -73,6 +78,53 @@ export class Connection {
 	): Promise<Response | gracely.Error> {
 		return await this.fetch<Response>(path, "DELETE", undefined, header)
 	}
+	private static storageValue: Storage | undefined | null = null
+	static get storage(): Storage | undefined {
+		if (this.storageValue == null) {
+			const date = new Date().toUTCString()
+			let result: Storage | undefined
+			if (typeof window == "object" && typeof window.localStorage == "object") {
+				const storage = window.localStorage
+				storage.setItem("test", date)
+				if (storage.getItem("test") == date)
+					result = storage
+				storage.removeItem("test")
+			} else {
+				console.log("window.localStorage does not exist")
+			}
+			this.storageValue = result
+		}
+		return this.storageValue
+	}
+	private static urlValue: string | undefined
+	static get url(): string | undefined {
+		const storage = Connection.storage
+		storage && (Connection.urlValue = storage.getItem("Intergiro baseUrl") ?? undefined)
+		return Connection.urlValue ?? "/"
+	}
+	static set url(value: string | undefined) {
+		value = value?.endsWith("/") ? value : value + "/"
+		const storage = Connection.storage
+		if (storage)
+			value ? storage.setItem("Intergiro baseUrl", value) : storage.removeItem("Intergiro baseUrl")
+		Connection.urlValue = value
+	}
+
+	private static keyValue: string | undefined
+	static get key(): string | undefined {
+		const storage = Connection.storage
+		storage && (Connection.keyValue = storage.getItem("Intergiro key") ?? "undefined")
+		return Connection.keyValue
+	}
+	static set key(value: string | undefined) {
+		const storage = Connection.storage
+		if (storage)
+			value ? storage.setItem("Intergiro key", value) : storage.removeItem("Intergiro key")
+		Connection.keyValue = value
+		Connection.keyChanged.forEach(callback => callback(Connection.keyValue))
+	}
+	static readonly keyChanged: ((key: authly.Token | undefined) => void)[] = []
+
 	static open(url: string, key: string): Connection
 	static open(url?: string, key?: string): Connection | undefined
 	static open(url?: string, key?: string): Connection | undefined {
