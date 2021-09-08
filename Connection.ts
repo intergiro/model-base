@@ -1,6 +1,7 @@
 import * as gracely from "gracely"
 import * as authly from "authly"
-import { default as fetch } from "isomorphic-fetch"
+import "isomorphic-fetch"
+import { Storage } from "./Storage"
 
 export class Connection {
 	onError?: (error: gracely.Error, request: RequestInit) => Promise<boolean>
@@ -46,31 +47,31 @@ export class Connection {
 		}
 		return result
 	}
-	async get<Response>(path: string, header?: HeadersInit & { accept: string }): Promise<Response | gracely.Error> {
+	async get<Response>(path: string, header?: HeadersInit & { accept?: string }): Promise<Response | gracely.Error> {
 		return await this.fetch<Response>(path, "GET", undefined, header)
 	}
 	async post<Response>(
 		path: string,
 		request: any,
-		header?: HeadersInit & { accept: string }
+		header?: HeadersInit & { accept?: string }
 	): Promise<Response | gracely.Error> {
 		return await this.fetch<Response>(path, "POST", request, header)
 	}
 	async put<Response>(
 		path: string,
 		request: any,
-		header?: HeadersInit & { accept: string }
+		header?: HeadersInit & { accept?: string }
 	): Promise<Response | gracely.Error> {
 		return await this.fetch<Response>(path, "PUT", request, header)
 	}
 	async patch<Response>(
 		path: string,
 		request: any,
-		header?: HeadersInit & { accept: string }
+		header?: HeadersInit & { accept?: string }
 	): Promise<Response | gracely.Error> {
 		return await this.fetch<Response>(path, "PATCH", request, header)
 	}
-	async delete<Response>(path: string, header?: HeadersInit & { accept: string }): Promise<Response | gracely.Error> {
+	async delete<Response>(path: string, header?: HeadersInit & { accept?: string }): Promise<Response | gracely.Error> {
 		return await this.fetch<Response>(path, "DELETE", undefined, header)
 	}
 
