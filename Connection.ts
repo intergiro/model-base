@@ -1,5 +1,6 @@
 import * as gracely from "gracely"
 import * as authly from "authly"
+import { Storage } from "./Storage"
 
 export class Connection {
 	onError?: (error: gracely.Error, request: RequestInit) => Promise<boolean>
