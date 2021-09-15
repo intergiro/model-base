@@ -31,7 +31,7 @@ export class Connection {
 						? "application/json+camelCase" + (header?.accept ?? "application/json").substring(26)
 						: header?.accept ?? "",
 				},
-				body: JSON.stringify(body),
+				body: body ? JSON.stringify(body) : undefined,
 			}
 			const response = (await fetch(Connection.url + path, request).catch(error => console.log(error))) ?? undefined
 			result = !response
