@@ -25,16 +25,16 @@ export class Connection {
 			const request: RequestInit = {
 				method,
 				headers: {
-					"Content-Type": body ? "application/json; charset=utf-8" : "",
+					"Content-Type": body ? "application/json; charset=utf-8" : "*/*",
 					authorization: key ? "Bearer " + key : "",
 					...header,
 					accept: (header?.accept ?? "application/json").startsWith("application/json")
 						? "application/json+camelCase" + (header?.accept ?? "application/json").substring(26)
 						: header?.accept ?? "",
 				},
-				body,
+				body: body ? JSON.stringify(body) : undefined,
 			}
-			const response = await fetch(Connection.url + path, request).catch(error => console.log(error))
+			const response = (await fetch(Connection.url + path, request).catch(error => console.log(error))) ?? undefined
 			result = !response
 				? gracely.server.unavailable("Failed to reach server.")
 				: response.status == 401 && this.onUnauthorized && (await this.onUnauthorized(this))
