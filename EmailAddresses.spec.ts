@@ -11,5 +11,3 @@ describe("EmailAddresses", () => {
 	it("get billing", () =>
 		expect(model.EmailAddresses.get({ billing: "first.last@email.com" })).toEqual("first.last@email.com"))
 })
-
-
