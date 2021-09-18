@@ -75,6 +75,6 @@
 		"prettierx": "github:robinnedergard/prettierx#newline-before-clause-sync",
 		"ts-jest": "^27.0.5",
 		"typescript": "^4.4.3",
-		"watch": "^1.0.2"
+		"watch": "^0.13.0"
 	}
 }
