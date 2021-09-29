@@ -55,7 +55,7 @@
   "dependencies": {
     "authly": "0.2.4",
     "gracely": "0.1.8",
-    "isoly": "0.1.9",
+    "isoly": "0.1.14",
     "selectively": "0.0.65"
   },
   "devDependencies": {
