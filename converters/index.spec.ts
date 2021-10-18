@@ -65,40 +65,12 @@ describe("IntergiroConverter", () => {
 		expect(toCamel([...snake_case])).toEqual(camelCase)
 	})
 	it("IntergiroConverter camel to snake with exceptions", () => {
-		expect(toSnake({ ...camelCaseWithExceptions })).toEqual(snake_case_with_exceptions)
-		expect(toCamel({ ...snake_case_with_exceptions })).toEqual({
-			...camelCaseWithExceptions,
-			list: [
-				{
-					...camelCaseWithExceptions.list[0],
-					nested: {
-						meta: {
-							meta_data: false,
-						},
-					},
-				},
-				camelCaseWithExceptions.list[1],
-			],
-		})
+		expect(toSnake({ ...camelCaseWithExceptions })).toEqual({ ...snake_case_with_exceptions })
+		expect(toCamel({ ...snake_case_with_exceptions })).toEqual({ ...camelCaseWithExceptions })
 	})
 	it("IntergiroConverter camel to snake with exceptions in a list", () => {
-		expect(toSnake([{ ...camelCaseWithExceptions }])).toEqual([snake_case_with_exceptions])
-		expect(toCamel([{ ...snake_case_with_exceptions }])).toEqual([
-			{
-				...camelCaseWithExceptions,
-				list: [
-					{
-						...camelCaseWithExceptions.list[0],
-						nested: {
-							meta: {
-								meta_data: false,
-							},
-						},
-					},
-					camelCaseWithExceptions.list[1],
-				],
-			},
-		])
+		expect(toSnake([{ ...camelCaseWithExceptions }])).toEqual([{ ...snake_case_with_exceptions }])
+		expect(toCamel([{ ...snake_case_with_exceptions }])).toEqual([{ ...camelCaseWithExceptions }])
 	})
 	it("IntergiroConverter camel to snake with defaultExceptions + header/headers in a list", () => {
 		const unmodifiedHeaders = toSnake([...camelCase], [...defaultExceptions, "*.header", "*.headers"])
@@ -134,6 +106,9 @@ describe("IntergiroConverter", () => {
 					threeDSServerTransID: "1234-1234",
 					messageVersion: "2.2.0",
 				},
+				meta: {
+					threeDSServerTransID: "meta-data",
+				},
 			},
 			detailsData: [],
 			other: false,
@@ -144,7 +119,7 @@ describe("IntergiroConverter", () => {
 			messageVersion: "2.2.0",
 		},
 		list: [
-			{ otherExample: true, meta: { metaData: true }, nested: { meta: { metaData: false } } },
+			{ otherExample: true, meta: { metaData: true }, nested: { meta: { metaData: true } } },
 			{ type: "method", threeDSServerTransID: "1234-1234", messageVersion: "2.2.0" },
 		],
 	}
@@ -162,6 +137,9 @@ describe("IntergiroConverter", () => {
 					threeDSServerTransID: "1234-1234",
 					messageVersion: "2.2.0",
 				},
+				meta: {
+					threeDSServerTransID: "meta-data",
+				},
 			},
 			details_data: [],
 			other: false,
@@ -172,7 +150,7 @@ describe("IntergiroConverter", () => {
 			messageVersion: "2.2.0",
 		},
 		list: [
-			{ other_example: true, meta: { metaData: true }, nested: { meta: { meta_data: false } } },
+			{ other_example: true, meta: { metaData: true }, nested: { meta: { metaData: true } } },
 			{ type: "method", three_d_s_server_trans_i_d: "1234-1234", message_version: "2.2.0" },
 		],
 	}
