@@ -90,8 +90,6 @@ export class Connection {
 				if (storage.getItem("test") == date)
 					result = storage
 				storage.removeItem("test")
-			} else {
-				console.log("window.localStorage does not exist")
 			}
 			this.storageValue = result
 		}
