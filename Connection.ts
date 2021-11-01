@@ -95,30 +95,39 @@ export class Connection {
 		}
 		return this.storageValue
 	}
+
+	static get app(): string | undefined {
+		const path = window.location.pathname.split("/").filter(p => !!p)
+		let result = "intergiro"
+		if (path.length > 0)
+			result = ["monitor", "portal", "customer"].includes(path[0]) ? path[0] : result
+		return result
+	}
+
 	private static urlValue: string | undefined
 	static get url(): string | undefined {
 		const storage = Connection.storage
-		storage && (Connection.urlValue = storage.getItem("Intergiro baseUrl") ?? undefined)
+		storage && (Connection.urlValue = storage.getItem(Connection.app + " baseUrl") ?? undefined)
 		return Connection.urlValue ?? "/"
 	}
 	static set url(value: string | undefined) {
 		value = value?.endsWith("/") ? value : value + "/"
 		const storage = Connection.storage
 		if (storage)
-			value ? storage.setItem("Intergiro baseUrl", value) : storage.removeItem("Intergiro baseUrl")
+			value ? storage.setItem(Connection.app + " baseUrl", value) : storage.removeItem(Connection.app + " baseUrl")
 		Connection.urlValue = value
 	}
 
 	private static keyValue: string | undefined
 	static get key(): string | undefined {
 		const storage = Connection.storage
-		storage && (Connection.keyValue = storage.getItem("Intergiro key") ?? "undefined")
+		storage && (Connection.keyValue = storage.getItem(Connection.app + " key") ?? "undefined")
 		return Connection.keyValue
 	}
 	static set key(value: string | undefined) {
 		const storage = Connection.storage
 		if (storage)
-			value ? storage.setItem("Intergiro key", value) : storage.removeItem("Intergiro key")
+			value ? storage.setItem(Connection.app + " key", value) : storage.removeItem(Connection.app + " key")
 		Connection.keyValue = value
 		Connection.keyChanged.forEach(callback => callback(Connection.keyValue))
 	}
