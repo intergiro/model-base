@@ -33,7 +33,12 @@ export class Connection {
 				},
 				body: body ? JSON.stringify(body) : undefined,
 			}
-			const response = (await fetch(Connection.url + path, request).catch(error => console.log(error))) ?? undefined
+			let response
+			try {
+				response = await fetch(Connection.url + path, request)
+			} catch (error) {
+				console.log(error)
+			}
 			result = !response
 				? gracely.server.unavailable("Failed to reach server.")
 				: response.status == 401 && this.onUnauthorized && (await this.onUnauthorized(this))
