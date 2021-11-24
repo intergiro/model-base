@@ -25,7 +25,7 @@ export class Connection {
 				method,
 				headers: {
 					"Content-Type": body ? "application/json; charset=utf-8" : "*/*",
-					authorization: key ? "Bearer " + key : "",
+					authorization: !key ? "" : key.startsWith("Basic ") || key.startsWith("Bearer ") ? key : "Bearer " + key,
 					...header,
 					accept: (header?.accept ?? "application/json").startsWith("application/json")
 						? "application/json+camelCase" + (header?.accept ?? "application/json").substring(26)
