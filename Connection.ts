@@ -1,5 +1,6 @@
 import * as gracely from "gracely"
 import * as authly from "authly"
+import "isomorphic-fetch"
 import { Storage } from "./Storage"
 
 export class Connection {
