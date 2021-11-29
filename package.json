@@ -56,10 +56,12 @@
     "authly": "0.2.4",
     "gracely": "0.1.8",
     "isoly": "0.1.14",
-    "selectively": "0.0.65"
+    "selectively": "0.0.65",
+    "isomorphic-fetch": "^3.0.0"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
+    "@types/isomorphic-fetch": "^0.0.35",
     "@types/jest": "^27.0.1",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
@@ -70,7 +72,6 @@
     "eslint-config-standardize": "^0.9.1",
     "eslint-plugin-prettierx": "github:robinnedergard/eslint-plugin-prettierx#master",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "isomorphic-fetch": "^3.0.0",
     "jest": "^27",
     "prettierx": "github:robinnedergard/prettierx#newline-before-clause-sync",
     "ts-jest": "^27.0.5",

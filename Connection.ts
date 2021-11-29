@@ -1,5 +1,6 @@
 import * as gracely from "gracely"
 import * as authly from "authly"
+import "isomorphic-fetch"
 import { Storage } from "./Storage"
 
 export class Connection {
@@ -45,7 +46,11 @@ export class Connection {
 				? await this.fetch<Response>(path, method, body)
 				: response.headers.get("Content-Type")?.startsWith("application/json")
 				? await response.json()
-				: await response.text()
+				: response.status >= 400 && response.headers.get("Content-Type")
+				? gracely.server.unknown(await response.text())
+				: response.headers.get("Content-Type")
+				? await response.text()
+				: this.handleNoContentResponses(response)
 			if (gracely.Error.is(result) && this.onError && (await this.onError(result, request)))
 				result = await this.fetch(path, method, body, header)
 		}
@@ -137,7 +142,21 @@ export class Connection {
 		Connection.keyChanged.forEach(callback => callback(Connection.keyValue))
 	}
 	static readonly keyChanged: ((key: authly.Token | undefined) => void)[] = []
-
+	private handleNoContentResponses<ReturnType>(response: Response): ReturnType | gracely.Result {
+		let result: ReturnType | gracely.Result
+		switch (response.status) {
+			case 404:
+				result = gracely.client.notFound()
+				break
+			case 204:
+				result = gracely.success.noContent()
+				break
+			default:
+				result = gracely.server.unknown("Unknown or missing response type.")
+				break
+		}
+		return result
+	}
 	static open(url: string, key: string): Connection
 	static open(url?: string, key?: string): Connection | undefined
 	static open(url?: string, key?: string): Connection | undefined {
