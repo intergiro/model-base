@@ -1,81 +1,81 @@
 {
-  "name": "@payfunc/model-base",
-  "version": "0.0.26",
-  "description": "Base Data models for Intergiro PSP and Acquirer.",
-  "author": "Intergiro",
-  "license": "MIT",
-  "private": false,
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "browser": {
-    "./dist/fetch": "./dist/fetch.browser"
-  },
-  "git": {
-    "tagName": "v${version}"
-  },
-  "github": {
-    "release": true
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.(j|t)sx?$": "ts-jest"
-    },
-    "transformIgnorePatterns": [
-      "<rootDir>/node_modules/(?!(cryptly|authly|@payfunc|gracely|isoly|servly|cloud-http)/.*)"
-    ],
-    "globals": {
-      "ts-jest": {
-        "tsconfig": "tsconfig.test.json"
-      }
-    },
-    "testEnvironment": "node",
-    "testRegex": "((\\.|/)(test|spec))(\\.|\\/.+)(jsx?|tsx?)$",
-    "testPathIgnorePatterns": [
-      "node_modules/",
-      "dist/"
-    ],
-    "collectCoverageFrom": [
-      "**/*.{ts,tsx,js,jsx}",
-      "!**/node_modules/**",
-      "!**/dist/**"
-    ],
-    "preset": "ts-jest",
-    "testMatch": null
-  },
-  "scripts": {
-    "dev": "watch 'npm run build' .",
-    "build": "tsc -p .",
-    "lint": "eslint '**/*.{js,ts,tsx}'",
-    "fix": "eslint '**/*.{js,ts,tsx}' --fix",
-    "test": "jest --maxWorkers=2",
-    "test:watch": "watch jest",
-    "prepare": "npm run build",
-    "clean": "rm -rf dist node_modules coverage"
-  },
-  "dependencies": {
-    "authly": "0.1.7",
-    "gracely": "0.0.43",
-    "isoly": "0.0.38",
-    "isomorphic-fetch": "^3.0.0",
-    "selectively": "0.0.65"
-  },
-  "devDependencies": {
-    "@types/dotenv": "^8.2.0",
-    "@types/isomorphic-fetch": "^0.0.35",
-    "@types/jest": "^27.0.1",
-    "@typescript-eslint/eslint-plugin": "^4.31.1",
-    "@typescript-eslint/parser": "^4.31.1",
-    "babel-core": "^6.26.3",
-    "babel-jest": "^27.2.0",
-    "dotenv": "^10.0.0",
-    "eslint": "^7.32.0",
-    "eslint-config-standardize": "^0.9.1",
-    "eslint-plugin-prettierx": "github:robinnedergard/eslint-plugin-prettierx#master",
-    "eslint-plugin-simple-import-sort": "^7.0.0",
-    "jest": "^27",
-    "prettierx": "github:robinnedergard/prettierx#newline-before-clause-sync",
-    "ts-jest": "^27.0.5",
-    "typescript": "^4.4.3",
-    "watch": "^1.0.2"
-  }
+	"name": "@payfunc/model-base",
+	"version": "0.0.26",
+	"description": "Base Data models for Intergiro PSP and Acquirer.",
+	"author": "Intergiro",
+	"license": "MIT",
+	"private": false,
+	"main": "dist/index.js",
+	"typings": "dist/index.d.ts",
+	"browser": {
+		"./dist/fetch": "./dist/fetch.browser"
+	},
+	"git": {
+		"tagName": "v${version}"
+	},
+	"github": {
+		"release": true
+	},
+	"jest": {
+		"transform": {
+			"^.+\\.(j|t)sx?$": "ts-jest"
+		},
+		"transformIgnorePatterns": [
+			"<rootDir>/node_modules/(?!(cryptly|authly|@payfunc|gracely|isoly|servly|cloud-http)/.*)"
+		],
+		"globals": {
+			"ts-jest": {
+				"tsconfig": "tsconfig.test.json"
+			}
+		},
+		"testEnvironment": "node",
+		"testRegex": "((\\.|/)(test|spec))(\\.|\\/.+)(jsx?|tsx?)$",
+		"testPathIgnorePatterns": [
+			"node_modules/",
+			"dist/"
+		],
+		"collectCoverageFrom": [
+			"**/*.{ts,tsx,js,jsx}",
+			"!**/node_modules/**",
+			"!**/dist/**"
+		],
+		"preset": "ts-jest",
+		"testMatch": null
+	},
+	"scripts": {
+		"dev": "watch 'npm run build' .",
+		"build": "tsc -p .",
+		"lint": "eslint '**/*.{js,ts,tsx}'",
+		"fix": "eslint '**/*.{js,ts,tsx}' --fix",
+		"test": "jest --maxWorkers=2",
+		"test:watch": "watch jest",
+		"prepare": "npm run build",
+		"clean": "rm -rf dist node_modules coverage"
+	},
+	"dependencies": {
+		"authly": "payfunc/authly#remove-warnings-parity",
+		"gracely": "payfunc/gracely#remove-warnings-parity",
+		"isoly": "payfunc/isoly#remove-warnings-parity",
+		"isomorphic-fetch": "^3.0.0",
+		"selectively": "payfunc/selectively#remove-warnings"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.16.7",
+		"@types/dotenv": "^8.2.0",
+		"@types/isomorphic-fetch": "^0.0.35",
+		"@types/jest": "^27.4.0",
+		"@typescript-eslint/eslint-plugin": "^5.9.0",
+		"@typescript-eslint/parser": "^5.9.0",
+		"babel-jest": "^27.4.5",
+		"dotenv": "^10.0.0",
+		"eslint": "^7.32.0",
+		"eslint-config-standardize": "^0.9.1",
+		"eslint-plugin-prettierx": "github:robinnedergard/eslint-plugin-prettierx#master",
+		"eslint-plugin-simple-import-sort": "^7.0.0",
+		"jest": "^27",
+		"prettierx": "github:robinnedergard/prettierx#newline-before-clause-sync",
+		"ts-jest": "^27.1.2",
+		"typescript": "^4.5.4",
+		"watch": "0.13.0"
+	}
 }
