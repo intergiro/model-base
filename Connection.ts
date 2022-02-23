@@ -6,6 +6,7 @@ import { Storage } from "./Storage"
 export class Connection {
 	onError?: (error: gracely.Error, request: RequestInit) => Promise<boolean>
 	onUnauthorized?: (connection: Connection) => Promise<boolean>
+	readonly continuation: Record<string, string | undefined> = {}
 	private constructor(url: string | undefined, key: string | undefined) {
 		Connection.url = url
 		Connection.key = key
@@ -15,11 +16,15 @@ export class Connection {
 		path: string,
 		method: string,
 		body?: any,
-		header?: HeadersInit & { accept?: string | undefined }
+		header?: HeadersInit & { accept?: string | undefined },
+		continuationName?: string,
+		continuation?: boolean
 	): Promise<Response | gracely.Error> {
 		let result: Response | gracely.Error
 		if (!Connection.url)
 			result = gracely.client.notFound("No server configured.")
+		else if (continuationName && continuation && this.continuation[continuationName] == "done")
+			result = new Response(JSON.stringify([]))
 		else {
 			const key = Connection.key
 			const request: RequestInit = {
@@ -34,12 +39,21 @@ export class Connection {
 				},
 				body: body ? JSON.stringify(body) : undefined,
 			}
+			path =
+				path +
+				(continuationName && this.continuation[continuationName] && continuation
+					? (path.includes("?") ? "&" : "?") +
+					  `continuation=${encodeURIComponent(this.continuation[continuationName] ?? "")})`
+					: "")
 			let response
 			try {
 				response = await fetch(Connection.url + path, request)
 			} catch (error) {
 				console.log(error)
 			}
+			continuationName &&
+				response &&
+				(this.continuation[continuationName] = response.headers.get("x-ms-continuation") ?? "done")
 			result = !response
 				? gracely.server.unavailable("Failed to reach server.")
 				: response.status == 401 && this.onUnauthorized && (await this.onUnauthorized(this))
@@ -58,9 +72,11 @@ export class Connection {
 	}
 	async get<Response>(
 		path: string,
-		header?: HeadersInit & { accept?: string | undefined }
+		header?: HeadersInit & { accept?: string | undefined },
+		continuationName?: string,
+		continuation?: boolean
 	): Promise<Response | gracely.Error> {
-		return await this.fetch<Response>(path, "GET", undefined, header)
+		return await this.fetch<Response>(path, "GET", undefined, header, continuationName, continuation)
 	}
 	async post<Response>(
 		path: string,
