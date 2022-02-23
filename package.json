@@ -57,7 +57,7 @@
     "gracely": "0.0.43",
     "isoly": "0.0.38",
     "isomorphic-fetch": "^3.0.0",
-    "selectively": "0.0.65"
+    "selectively": "0.0.70"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
