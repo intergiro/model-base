@@ -55,7 +55,7 @@
   "dependencies": {
     "authly": "0.2.4",
     "gracely": "0.1.8",
-    "isoly": "0.1.19",
+    "isoly": "^0.1.22",
     "isomorphic-fetch": "^3.0.0",
     "selectively": "^0.0.70"
   },
