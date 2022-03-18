@@ -43,7 +43,7 @@ export class Connection {
 				path +
 				(continuationName && this.continuation[continuationName] && continuation
 					? (path.includes("?") ? "&" : "?") +
-					  `continuation=${encodeURIComponent(this.continuation[continuationName] ?? "")})`
+					  `continuation=${encodeURIComponent(this.continuation[continuationName] ?? "")}`
 					: "")
 			let response
 			try {
