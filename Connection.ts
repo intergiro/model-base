@@ -132,10 +132,10 @@ export class Connection {
 	static get url(): string | undefined {
 		const storage = Connection.storage
 		storage && (Connection.urlValue = storage.getItem(Connection.app + " baseUrl") ?? undefined)
-		return Connection.urlValue ?? "/"
+		return Connection.urlValue
 	}
 	static set url(value: string | undefined) {
-		value = value?.endsWith("/") ? value : value + "/"
+		value = value?.endsWith("/") || !value ? value : value + "/"
 		const storage = Connection.storage
 		if (storage)
 			value ? storage.setItem(Connection.app + " baseUrl", value) : storage.removeItem(Connection.app + " baseUrl")
@@ -144,7 +144,7 @@ export class Connection {
 	private static keyValue: string | undefined
 	static get key(): string | undefined {
 		const storage = Connection.storage
-		storage && (Connection.keyValue = storage.getItem(Connection.app + " key") ?? "undefined")
+		storage && (Connection.keyValue = storage.getItem(Connection.app + " key") ?? undefined)
 		return Connection.keyValue
 	}
 	static set key(value: string | undefined) {
