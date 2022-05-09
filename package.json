@@ -53,9 +53,9 @@
     "clean": "rm -rf dist node_modules coverage"
   },
   "dependencies": {
-    "authly": "0.2.4",
-    "gracely": "0.1.8",
-    "isoly": "^0.1.22",
+    "authly": "0.2.9",
+    "gracely": "0.1.10",
+    "isoly": "^0.1.28",
     "isomorphic-fetch": "^3.0.0",
     "selectively": "^0.0.70"
   },
