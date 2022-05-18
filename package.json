@@ -1,6 +1,6 @@
 {
   "name": "@payfunc/model-base",
-  "version": "0.1.35",
+  "version": "2.0.0",
   "description": "Base Data models for Intergiro PSP and Acquirer.",
   "author": "Intergiro",
   "license": "MIT",
@@ -52,12 +52,16 @@
     "prepare": "npm run build",
     "clean": "rm -rf dist node_modules coverage"
   },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=16.0.0"
+  },
   "dependencies": {
-    "authly": "0.2.9",
-    "gracely": "0.1.10",
-    "isoly": "^0.1.28",
+    "authly": "payfunc/authly#update-node",
+    "gracely": "payfunc/gracely#update-node",
+    "isoly": "payfunc/isoly#update-node",
     "isomorphic-fetch": "^3.0.0",
-    "selectively": "^0.0.70"
+    "selectively": "payfunc/selectively#update-node"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
