@@ -57,28 +57,29 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "authly": "payfunc/authly#update-node",
-    "gracely": "payfunc/gracely#update-node",
-    "isoly": "payfunc/isoly#update-node",
+    "authly": "2.0.1",
+    "gracely": "2.0.1",
+    "isoly": "2.0.1",
     "isomorphic-fetch": "^3.0.0",
-    "selectively": "payfunc/selectively#update-node"
+    "selectively": "2.0.1"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
     "@types/isomorphic-fetch": "^0.0.35",
-    "@types/jest": "^27.0.1",
-    "@typescript-eslint/eslint-plugin": "^4.31.1",
-    "@typescript-eslint/parser": "^4.31.1",
+    "@types/jest": "^27.0.3",
+    "@types/node": "^17.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.8.0",
+    "@typescript-eslint/parser": "^5.8.0",
     "babel-core": "^6.26.3",
-    "babel-jest": "^27.2.0",
+    "babel-jest": "^27.4.5",
     "dotenv": "^10.0.0",
     "eslint": "^7.32.0",
     "eslint-config-standardize": "^0.9.1",
-    "eslint-plugin-prettierx": "github:robinnedergard/eslint-plugin-prettierx#master",
+    "eslint-plugin-prettierx": "github:utily/eslint-plugin-prettierx#utily-20211221",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "jest": "^27",
-    "prettierx": "github:robinnedergard/prettierx#newline-before-clause-sync",
-    "ts-jest": "^27.0.5",
+    "prettierx": "github:utily/prettierx#utily-20211221",
+    "ts-jest": "^27.1.2",
     "typescript": "^4.4.3",
     "watch": "^1.0.2"
   }
