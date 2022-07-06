@@ -1,6 +1,6 @@
 {
   "name": "@payfunc/model-base",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Base Data models for Intergiro PSP and Acquirer.",
   "author": "Intergiro",
   "license": "MIT",
