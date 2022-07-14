@@ -12,6 +12,32 @@ export class Connection {
 		Connection.key = key
 	}
 
+	protected async fetchResponse(
+		path: string,
+		method: string,
+		body?: any,
+		header?: HeadersInit & { accept?: string | undefined },
+		continuationName?: string,
+		continuation?: boolean
+	): Promise<globalThis.Response | gracely.Error> {
+		let result: globalThis.Response | gracely.Error
+		if (!Connection.url)
+			result = gracely.client.notFound("No server configured.")
+		else if (continuationName && continuation && this.continuation[continuationName] == "done")
+			result = new Response(JSON.stringify([]))
+		else {
+			const request: RequestInit = this.createRequest(method, body, header)
+			path = this.appendContinuationToken(path, continuationName, continuation)
+			try {
+				result = await fetch(Connection.url + path, request)
+			} catch (error) {
+				console.log(error)
+				result = gracely.server.unavailable("Failed to reach server.")
+			}
+		}
+		return result
+	}
+
 	private async fetch<Response>(
 		path: string,
 		method: string,
@@ -21,36 +47,12 @@ export class Connection {
 		continuation?: boolean
 	): Promise<Response | gracely.Error> {
 		let result: Response | gracely.Error
-		if (!Connection.url)
-			result = gracely.client.notFound("No server configured.")
-		else if (continuationName && continuation && this.continuation[continuationName] == "done")
-			result = new Response(JSON.stringify([]))
+		const request: RequestInit = this.createRequest(method, body, header)
+		const response = await this.fetchResponse(path, method, body, header, continuationName, continuation)
+		if (gracely.Error.is(response))
+			result = response
 		else {
-			const key = Connection.key
-			const request: RequestInit = {
-				method,
-				headers: {
-					"Content-Type": body ? "application/json; charset=utf-8" : "*/*",
-					authorization: !key ? "" : key.startsWith("Basic ") || key.startsWith("Bearer ") ? key : "Bearer " + key,
-					...header,
-					accept: (header?.accept ?? "application/json").startsWith("application/json")
-						? "application/json+camelCase" + (header?.accept ?? "application/json").substring(26)
-						: header?.accept ?? "",
-				},
-				body: body ? JSON.stringify(body) : undefined,
-			}
-			path =
-				path +
-				(continuationName && this.continuation[continuationName] && continuation
-					? (path.includes("?") ? "&" : "?") +
-					  `continuation=${encodeURIComponent(this.continuation[continuationName] ?? "")}`
-					: "")
-			let response
-			try {
-				response = await fetch(Connection.url + path, request)
-			} catch (error) {
-				console.log(error)
-			}
+			path = this.appendContinuationToken(path, continuationName, continuation)
 			continuationName &&
 				response &&
 				(this.continuation[continuationName] = response.headers.get("x-ms-continuation") ?? "done")
@@ -69,6 +71,39 @@ export class Connection {
 				result = await this.fetch(path, method, body, header)
 		}
 		return result
+	}
+	private createRequest(
+		method: string,
+		body: any,
+		header: (HeadersInit & { accept?: string | undefined }) | undefined
+	): RequestInit {
+		const key = Connection.key
+		return {
+			method,
+			headers: {
+				"Content-Type": body ? "application/json; charset=utf-8" : "*/*",
+				authorization: !key ? "" : key.startsWith("Basic ") || key.startsWith("Bearer ") ? key : "Bearer " + key,
+				...header,
+				accept: (header?.accept ?? "application/json").startsWith("application/json")
+					? "application/json+camelCase" + (header?.accept ?? "application/json").substring(26)
+					: header?.accept ?? "",
+			},
+			body: body ? JSON.stringify(body) : undefined,
+		}
+	}
+
+	private appendContinuationToken(
+		path: string,
+		continuationName: string | undefined,
+		continuation: boolean | undefined
+	): string {
+		return (
+			path +
+			(continuationName && this.continuation[continuationName] && continuation
+				? (path.includes("?") ? "&" : "?") +
+				  `continuation=${encodeURIComponent(this.continuation[continuationName] ?? "")}`
+				: "")
+		)
 	}
 	async get<Response>(
 		path: string,
