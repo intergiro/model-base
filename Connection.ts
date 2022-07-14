@@ -12,7 +12,7 @@ export class Connection {
 		Connection.key = key
 	}
 
-	protected async fetchResponse(
+	public async fetchRaw(
 		path: string,
 		method: string,
 		body?: any,
@@ -48,7 +48,7 @@ export class Connection {
 	): Promise<Response | gracely.Error> {
 		let result: Response | gracely.Error
 		const request: RequestInit = this.createRequest(method, body, header)
-		const response = await this.fetchResponse(path, method, body, header, continuationName, continuation)
+		const response = await this.fetchRaw(path, method, body, header, continuationName, continuation)
 		if (gracely.Error.is(response))
 			result = response
 		else {
